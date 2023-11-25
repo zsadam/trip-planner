@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  dev-runner:
+    build:
+      context: .
+      target: dev
+    volumes:
+      - .:/app:rw,delegated
+    networks:
+      - my_network
+    ports:
+      - "2345:2345"
+
+networks:
+  my_network:
+    name: my_network

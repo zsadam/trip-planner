@@ -1,0 +1,68 @@
+run:
+  timeout: 1m
+
+output:
+  format: checkstyle
+
+linters:
+  disable-all: true
+  enable:
+    - govet
+    - errcheck
+    - staticcheck
+    - unused
+    - gosimple
+    - ineffassign
+    - typecheck
+    - bodyclose
+    - noctx
+    - revive
+    - rowserrcheck
+    - stylecheck
+    - gosec
+    - unconvert
+    - dupl
+    - goconst
+    - gocyclo
+    - gocognit
+    - asciicheck
+    - gofmt
+    - gofumpt
+    - goimports
+    - goheader
+    - misspell
+    - lll
+    - unparam
+    - dogsled
+    - nakedret
+    - prealloc
+    - exportloopref
+    - gocritic
+    - godox
+    - funlen
+    - whitespace
+    - wsl
+    - goprintffuncname
+    - gomnd
+    - goerr113
+    - gomodguard
+    - godot
+    - testpackage
+    - nestif
+    - exportloopref
+    - exhaustive
+    - sqlclosecheck
+    - nlreturn
+    - nolintlint
+
+linters-settings:
+  funlen:
+    lines: 120
+    statements: 120
+  govet:
+    enable:
+      - fieldalignment
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0

@@ -1,8 +1,0 @@
-root = "."
-tmp_dir = "tmp"
-
-[build]
-cmd = "go build -gcflags='all=-N -l' -o ./tmp/main ."
-bin = "tmp/main"
-full_bin = "dlv --listen=:2345 --headless=true --continue --api-version=2 --accept-multiclient --log exec ./tmp/main"
-include_ext = ["go"]

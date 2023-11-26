@@ -1,4 +1,4 @@
-package planner
+package topsort
 
 type CyclicGraphError string
 
@@ -17,11 +17,11 @@ func (vertex *vertex) addNeighbor(neighbor *vertex) {
 	vertex.neighbors = append(vertex.neighbors, neighbor)
 }
 
-type graph struct {
+type Graph struct {
 	vertices []*vertex
 }
 
-func (graph *graph) getVertex(name string) *vertex {
+func (graph *Graph) getVertex(name string) *vertex {
 	for _, actVertex := range graph.vertices {
 		if actVertex.name == name {
 			return actVertex
@@ -31,7 +31,7 @@ func (graph *graph) getVertex(name string) *vertex {
 	return nil
 }
 
-func (graph *graph) addVertex(name string) *vertex {
+func (graph *Graph) addVertex(name string) *vertex {
 	srcVertex := graph.getVertex(name)
 
 	if srcVertex == nil {
@@ -44,7 +44,7 @@ func (graph *graph) addVertex(name string) *vertex {
 	return srcVertex
 }
 
-func (graph *graph) addEdge(srcKey, destKey string) {
+func (graph *Graph) AddEdge(srcKey, destKey string) {
 	srcVertex := graph.addVertex(srcKey)
 
 	if len(destKey) == 0 {
@@ -56,7 +56,7 @@ func (graph *graph) addEdge(srcKey, destKey string) {
 	srcVertex.addNeighbor(destVertex)
 }
 
-func (graph *graph) visit(vertex *vertex, result *[]string) error {
+func (graph *Graph) visit(vertex *vertex, result *[]string) error {
 	vertex.visited = true
 	vertex.cyclicCheck = true
 
@@ -78,7 +78,7 @@ func (graph *graph) visit(vertex *vertex, result *[]string) error {
 	return nil
 }
 
-func (graph *graph) topologicalSort() ([]string, error) {
+func (graph *Graph) TopologicalSort() ([]string, error) {
 	result := make([]string, 0)
 
 	for _, vertex := range graph.vertices {

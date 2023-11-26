@@ -1,6 +1,9 @@
 package planner
 
-import "errors"
+import (
+	"errors"
+	"trip-planner/planner/topsort"
+)
 
 type CyclicDependencyError string
 
@@ -16,14 +19,14 @@ type Dependency struct {
 }
 
 func Plan(dependencies []Dependency) ([]string, error) {
-	graph := graph{}
+	graph := topsort.Graph{}
 	for _, item := range dependencies {
-		graph.addEdge(string(item.Destination), string(item.Dependency))
+		graph.AddEdge(string(item.Destination), string(item.Dependency))
 	}
 
-	sortedDependencies, err := graph.topologicalSort()
+	sortedDependencies, err := graph.TopologicalSort()
 
-	var cyclicGraphError CyclicGraphError
+	var cyclicGraphError topsort.CyclicGraphError
 	if errors.As(err, &cyclicGraphError) {
 		return nil, CyclicDependencyError("")
 	}

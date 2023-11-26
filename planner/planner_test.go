@@ -11,7 +11,7 @@ type PlannerTestSuite struct {
 	suite.Suite
 }
 
-func (s *PlannerTestSuite) TestPlan() {
+func (s *PlannerTestSuite) TestPlanShouldSortGivenDestinations() {
 	testCases := []struct {
 		description  string
 		dependencies []planner.Dependency
@@ -60,11 +60,22 @@ func (s *PlannerTestSuite) TestPlan() {
 		s.Run(
 			tc.description,
 			func() {
-				sortedDestinations := planner.Plan(tc.dependencies)
+				sortedDestinations, err := planner.Plan(tc.dependencies)
+				s.Nil(err)
 				s.Equal(tc.expected, sortedDestinations)
 			},
 		)
 	}
+}
+
+func (s *PlannerTestSuite) TestPlanShouldReturnErrorWhenDestinationsAreCyclic() {
+	dependencies := []planner.Dependency{
+		{"Paris", "Berlin"},
+		{"Berlin", "Paris"},
+	}
+	sortedDestinations, err := planner.Plan(dependencies)
+	s.Nil(sortedDestinations)
+	s.ErrorIs(err, planner.CyclicDependencyError(""))
 }
 
 func TestPlannerTestSuite(t *testing.T) {

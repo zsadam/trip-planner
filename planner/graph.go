@@ -1,9 +1,16 @@
 package planner
 
+type CyclicGraphError string
+
+func (e CyclicGraphError) Error() string {
+	return "Please provide an acyclic graph"
+}
+
 type vertex struct {
-	name      string
-	neighbors []*vertex
-	visited   bool
+	name        string
+	neighbors   []*vertex
+	visited     bool
+	cyclicCheck bool
 }
 
 func (vertex *vertex) addNeighbor(neighbor *vertex) {
@@ -49,26 +56,39 @@ func (graph *graph) addEdge(srcKey, destKey string) {
 	srcVertex.addNeighbor(destVertex)
 }
 
-func (graph *graph) visit(vertex *vertex, result *[]string) {
+func (graph *graph) visit(vertex *vertex, result *[]string) error {
 	vertex.visited = true
+	vertex.cyclicCheck = true
 
 	for _, neighbor := range vertex.neighbors {
 		if !neighbor.visited {
-			graph.visit(neighbor, result)
+			err := graph.visit(neighbor, result)
+			if err != nil {
+				return err
+			}
+		} else if neighbor.cyclicCheck {
+			return CyclicGraphError("")
 		}
 	}
 
+	vertex.cyclicCheck = false
+
 	*result = append(*result, vertex.name)
+
+	return nil
 }
 
-func (graph *graph) topologicalSort() []string {
+func (graph *graph) topologicalSort() ([]string, error) {
 	result := make([]string, 0)
 
 	for _, vertex := range graph.vertices {
 		if !vertex.visited {
-			graph.visit(vertex, &result)
+			err := graph.visit(vertex, &result)
+			if err != nil {
+				return nil, err
+			}
 		}
 	}
 
-	return result
+	return result, nil
 }

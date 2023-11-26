@@ -8,5 +8,11 @@ type Dependency struct {
 }
 
 func Plan(dependencies []Dependency) []string {
-	return []string{string(dependencies[0].Destination)}
+	result := make([]string, len(dependencies))
+
+	for i, dependency := range dependencies {
+		result[i] = string(dependency.Destination)
+	}
+
+	return result
 }

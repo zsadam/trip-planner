@@ -12,11 +12,29 @@ type PlannerTestSuite struct {
 }
 
 func (s *PlannerTestSuite) TestPlan() {
-	sortedDestinations := planner.Plan(
-		[]planner.Dependency{
-			{"Paris", ""},
-		})
-	s.Equal([]string{"Paris"}, sortedDestinations)
+	testCases := []struct {
+		description  string
+		dependencies []planner.Dependency
+		expected     []string
+	}{
+		{
+			"single destination without dependency",
+			[]planner.Dependency{
+				{"Paris", ""},
+			},
+			[]string{"Paris"},
+		},
+	}
+
+	for _, tc := range testCases {
+		s.Run(
+			tc.description,
+			func() {
+				sortedDestinations := planner.Plan(tc.dependencies)
+				s.Equal(tc.expected, sortedDestinations)
+			},
+		)
+	}
 }
 
 func TestPlannerTestSuite(t *testing.T) {

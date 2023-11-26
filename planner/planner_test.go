@@ -42,6 +42,18 @@ func (s *PlannerTestSuite) TestPlan() {
 			},
 			[]string{"Paris", "Madrid", "London"},
 		},
+		{
+			"multiple destinations with multiple dependency",
+			[]planner.Dependency{
+				{"Paris", ""},
+				{"Berlin", "Madrid"},
+				{"Madrid", "London"},
+				{"Amsterdam", "Paris"},
+				{"Roma", "Berlin"},
+				{"London", ""},
+			},
+			[]string{"Paris", "London", "Madrid", "Berlin", "Amsterdam", "Roma"},
+		},
 	}
 
 	for _, tc := range testCases {

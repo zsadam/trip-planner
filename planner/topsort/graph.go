@@ -6,6 +6,12 @@ func (e CyclicGraphError) Error() string {
 	return "Please provide an acyclic graph"
 }
 
+type EmptyVertexKeyError string
+
+func (e EmptyVertexKeyError) Error() string {
+	return "Empty vertex key"
+}
+
 type vertex struct {
 	name        string
 	neighbors   []*vertex
@@ -44,16 +50,22 @@ func (graph *Graph) addVertex(name string) *vertex {
 	return srcVertex
 }
 
-func (graph *Graph) AddEdge(srcKey, destKey string) {
+func (graph *Graph) AddEdge(srcKey, destKey string) error {
+	if len(srcKey) == 0 {
+		return EmptyVertexKeyError("")
+	}
+
 	srcVertex := graph.addVertex(srcKey)
 
 	if len(destKey) == 0 {
-		return
+		return nil
 	}
 
 	destVertex := graph.addVertex(destKey)
 
 	srcVertex.addNeighbor(destVertex)
+
+	return nil
 }
 
 func (graph *Graph) visit(vertex *vertex, result *[]string) error {

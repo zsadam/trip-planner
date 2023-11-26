@@ -78,6 +78,15 @@ func (s *PlannerTestSuite) TestPlanShouldReturnErrorWhenDestinationsAreCyclic() 
 	s.ErrorIs(err, planner.CyclicDependencyError(""))
 }
 
+func (s *PlannerTestSuite) TestPlanShouldReturnErrorWhenDestinationIsEmpty() {
+	dependencies := []planner.Dependency{
+		{"", ""},
+	}
+	sortedDestinations, err := planner.Plan(dependencies)
+	s.Nil(sortedDestinations)
+	s.ErrorIs(err, planner.EmptyDestinationError(""))
+}
+
 func TestPlannerTestSuite(t *testing.T) {
 	suite.Run(t, new(PlannerTestSuite))
 }

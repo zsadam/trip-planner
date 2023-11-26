@@ -11,6 +11,17 @@ func (e CyclicDependencyError) Error() string {
 	return "There is a cycle in the destination dependencies"
 }
 
+type EmptyDestinationError string
+
+func (e EmptyDestinationError) Error() string {
+	return "Empty destination"
+}
+
+var (
+	cyclicGraphError topsort.CyclicGraphError
+	emptyVertexError topsort.EmptyVertexKeyError
+)
+
 type destination string
 
 type Dependency struct {
@@ -20,13 +31,17 @@ type Dependency struct {
 
 func Plan(dependencies []Dependency) ([]string, error) {
 	graph := topsort.Graph{}
+
 	for _, item := range dependencies {
-		graph.AddEdge(string(item.Destination), string(item.Dependency))
+		err := graph.AddEdge(string(item.Destination), string(item.Dependency))
+
+		if errors.As(err, &emptyVertexError) {
+			return nil, EmptyDestinationError("")
+		}
 	}
 
 	sortedDependencies, err := graph.TopologicalSort()
 
-	var cyclicGraphError topsort.CyclicGraphError
 	if errors.As(err, &cyclicGraphError) {
 		return nil, CyclicDependencyError("")
 	}
